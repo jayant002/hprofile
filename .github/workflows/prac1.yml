@@ -33,6 +33,7 @@
            -Dsonar.sources=src/
            -Dsonar.junit.reportsPath=target/surefire-reports/
            -Dsonar.jacoco.reportsPath=target/jacoco.exec
-           -Dsonar.java.checkstyle.reportsPaths=target/checkstyle-result.xml
-           -Dsnar.java.binaries=target/test-classes/com/visupathit/account
+           -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
+           -Dsonar.java.binaries=target/test-classes/java/com/visualpathit/account/controllerTest
+       
        
