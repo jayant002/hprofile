@@ -7,34 +7,38 @@ jobs:
       - name: Code checkout
         uses: actions/checkout@v4
 
-      - name: Maven test
-        run: mvn test
-
-      - name: Checkstyle
-        run: mvn checkstyle:checkstyle
-
-      # Setup java 11 to be default (sonar-scanner requirement as of 5.x)
       - name: Set Java 11
         uses: actions/setup-java@v3
         with:
-         distribution: 'temurin' # See 'Supported distributions' for available options
-         java-version: '11'
-       # Setup sonar-scanner
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Clean workspace
+        run: mvn clean
+
+      - name: Compile and test the code
+        run: mvn clean verify
+
+      - name: Debug: Verify .class files
+        run: |
+          echo "Main classes:"
+          ls -R target/classes
+          echo "Test classes:"
+          ls -R target/test-classes
+
       - name: Setup SonarQube
         uses: warchant/setup-sonar-scanner@v7
-        
-
 
       - name: SonarQube Scan
-        run: sonar-scanner
-           -Dsonar.host.url=${{ secrets.SONAR_URL }}
-           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-           -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-           -Dsonar.sources=src/
-           -Dsonar.junit.reportsPath=target/surefire-reports/ 
-           -Dsonar.jacoco.reportsPath=target/jacoco.exec 
-           -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
-           -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/
-
-    
+        run: |
+          sonar-scanner \
+            -Dsonar.host.url=${{ secrets.SONAR_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+            -Dsonar.sources=src/ \
+            -Dsonar.java.binaries=target/classes,target/test-classes \
+            -Dsonar.junit.reportsPath=target/surefire-reports/ \
+            -Dsonar.jacoco.reportsPath=target/jacoco.exec \
+            -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml \
+            -X
