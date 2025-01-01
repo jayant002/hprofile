@@ -28,6 +28,9 @@
     # Setup sonar-scanner
         - name: Setup SonarQube
           uses: warchant/setup-sonar-scanner@v7
+        - name: Debug  
+          run: ls -R target/classes
+
     # Run sonar-scanner
         - name: SonarQube Scan
           run: |
